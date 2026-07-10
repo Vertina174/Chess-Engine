@@ -1,16 +1,35 @@
-#pragma once
+enum Piece{
+    EMPTY=0,
+
+    WPAWN,
+    WBISHOP,
+    WKNIGHT,
+    WROOK,
+    WQUEEN,
+    WKING,
+
+    BPAWN,
+    BBISHOP,
+    BKNIGHT,
+    BROOK,
+    BQUEEN,
+    BKING,
+};
 class Board{
     public:
-    void draw();
-    int board[8][8]={
-        {1,1,1,1,1,1,1,1},
-        {0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0},
-        {1,1,1,1,1,1,1,1}
+    
+    Board();
+    ~Board();
+    void draw();    
+    Piece board[8][8]{
+        
+        {BROOK,BKNIGHT,BBISHOP,BQUEEN,BKING,BBISHOP,BKNIGHT,BROOK},
+        {BPAWN,BPAWN,BPAWN,BPAWN,BPAWN,BPAWN,BPAWN,BPAWN},
+        {EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY},
+        {EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY},
+        {EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY},
+        {EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY},
+        {WPAWN,WPAWN,WPAWN,WPAWN,WPAWN,WPAWN,WPAWN,WPAWN},
+        {WROOK,WKNIGHT,WBISHOP,WQUEEN,WKING,WBISHOP,WKNIGHT,WROOK}
     };
-    Texture2D wpawn;
 };

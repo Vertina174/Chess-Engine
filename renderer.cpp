@@ -1,12 +1,19 @@
 #include"renderer.h"
 #include"board.h"
+#include"piece.h"
 #include"src/include/raylib.h"
 #include<iostream>
+// For Refrerrence
+// int y = board.offsetY + (row*board.squaresize);
+// int x = board.offsetX + (col*board.squaresize);
+Color highlight_color = {128,128,128,130};
+Color legal_move = {0,0,0,125};
+
 
     Texture2D wpawn, wknight, wbishop, wrook, wqueen, wking;
     Texture2D bpawn, bknight, bbishop, brook, bqueen, bking;
     
-Board::Board(){
+void Load_Texture(){
     Image whitepawn = LoadImage("assets/wpawn.png");
     Image whiterook = LoadImage("assets/wrook.png");
     Image whiteknight = LoadImage("assets/wknight.png");
@@ -66,7 +73,7 @@ Board::Board(){
     
 system("cls");
 }
-Board::~Board(){
+void Unload_Texture(){
         UnloadTexture(wpawn);
         UnloadTexture(wrook);
         UnloadTexture(wking);
@@ -83,13 +90,8 @@ Board::~Board(){
 system("cls");
     }
 
-void Board::draw(){
-    const int squaresize  = 80;
-    const int boardsize  =  80*8;
-    const int width     = 800;
-    const int height    = 700;
-    const int offsetX   =(width -(boardsize))/2;
-    const int offsetY   =(height -(boardsize))/2;
+void draw_board(Board& board){
+    
     
 // Drawing Empty Board
     for(int row=0; row<8; ++row){
@@ -100,107 +102,88 @@ void Board::draw(){
             else
                 color = {118,150,86,255};
 
-        int x = offsetX + (col*squaresize);
-        int y = offsetY + (row*squaresize);
-        DrawRectangle(x,y,squaresize,squaresize,color);
+        int x = board.offsetX + (col*board.squaresize);
+        int y = board.offsetY + (row*board.squaresize);
+        DrawRectangle(x,y,board.squaresize,board.squaresize,color);
 
         }
     }
+}
 // Drawing Pieces
-    //Drawing Pawn
- 
-    
+void draw_pieces(Board& board){
 for(int row=0; row<8; ++row){
     for(int col=0; col<8; ++col){
 
-        switch(board[row][col]){
-        case WPAWN:{
-            int x = offsetX + (col*squaresize);
-            int y = offsetY + (row*squaresize);
+            int x = board.offsetX + (col*board.squaresize);
+            int y = board.offsetY + (row*board.squaresize);
 
-            DrawTexture(wpawn,x-5,y-3
-                ,WHITE);
+        switch(board.board[row][col]){
+        case WPAWN:{
+            DrawTexture(wpawn,x-5,y-7,WHITE);
             break;
         }
         case WROOK:{
-            int x = offsetX + (col*squaresize);
-            int y = offsetY + (row*squaresize);
-
             DrawTexture(wrook,x+3,y+5,WHITE);
             break;
         }
         case WKNIGHT:{
-            int x = offsetX + (col*squaresize);
-            int y = offsetY + (row*squaresize);
-
             DrawTexture(wknight,x+3,y+5,WHITE);
             break;
         }
         case WBISHOP:{
-            int x = offsetX + (col*squaresize);
-            int y = offsetY + (row*squaresize);
-
             DrawTexture(wbishop,x+3,y+5,WHITE);
             break;
         }
         case WQUEEN:{
-            int x = offsetX + (col*squaresize);
-            int y = offsetY + (row*squaresize);
-
             DrawTexture(wqueen,x+3,y+5,WHITE);
             break;
         }
         case WKING:{
-            int x = offsetX + (col*squaresize);
-            int y = offsetY + (row*squaresize);
-
             DrawTexture(wking,x+3,y+5,WHITE);
             break;
         }
         case BPAWN:{
-            int x = offsetX + (col*squaresize);
-            int y = offsetY + (row*squaresize);
-
-            DrawTexture(bpawn,x-5,y-3,WHITE);
+            DrawTexture(bpawn,x-5,y-7,WHITE);
             break;
         }
         case BROOK:{
-            int x = offsetX + (col*squaresize);
-            int y = offsetY + (row*squaresize);
-
             DrawTexture(brook,x+3,y+5,WHITE);
             break;
         }
         case BKNIGHT:{
-int x = offsetX + (col*squaresize);
-            int y = offsetY + (row*squaresize);
-
             DrawTexture(bknight,x+3,y+5,WHITE);
             break;
         }
         case BBISHOP:{
-            int x = offsetX + (col*squaresize);
-            int y = offsetY + (row*squaresize);
-
             DrawTexture(bbishop,x+3,y+5,WHITE);
             break;
         }
         case BQUEEN:{
-            int x = offsetX + (col*squaresize);
-            int y = offsetY + (row*squaresize);
-
             DrawTexture(bqueen,x+3,y+5,WHITE);
             break;
         }
         case BKING:{
-            int x = offsetX + (col*squaresize);
-            int y = offsetY + (row*squaresize);
-
             DrawTexture(bking,x+3,y+5,WHITE);
             break;
-        }
-        }
+                }
+            }
         
+        }
+    }
 }
+void highlighted_piece(Board& board){
+    if(board.pieceinfo.selected_piece==0)
+        return;
+
+        int y = (board.pieceinfo.row *board.squaresize);
+        int x = (board.pieceinfo.col *board.squaresize);
+        DrawRectangle(x,y-50,board.squaresize,board.squaresize,highlight_color);
+        DrawCircle(x+40,y-90,10,legal_move);
+        DrawCircle(x+40,y-(85*2),10,legal_move);
 }
+void Draw(Board& board){
+    draw_board(board);
+    draw_pieces(board);
+    if(board.pieceinfo.selected_piece!=0)
+            highlighted_piece(board);
 }

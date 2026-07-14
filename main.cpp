@@ -1,45 +1,34 @@
-// g++ main.cpp board.cpp renderer.cpp piece.cpp -o a -I "src/include" -L "src/lib" -lraylib -lopengl32 -lgdi32 -lwinmm -lshell32 && ./a
-#include"renderer.h"
-#include"board.h"
-#include"src/include/raylib.h"// cross platform
+// g++ main.cpp renderer.cpp piece.cpp -o a -I "src/include" -L "src/lib" -lraylib -lopengl32 -lgdi32 -lwinmm -lshell32 && ./a
+#include"src/include/raylib.h"
 #include<iostream>
-#define width 800
-#define height 700
+#include"board.h"
+#include"renderer.h"
+#include"piece.h"
 using namespace std;
-const Color GREY = {48,46,43,255};
-
 int main(){
-InitWindow(width,height,"asdfadsf");
-SetTargetFPS(10);
-system("cls");
+InitWindow(SCREEN_WIDTH,SCREEN_HEIGHT,"Chess Engine");
+SetTargetFPS(15);
 Board board;
 Load_Texture();
+system("cls");
 while(!WindowShouldClose()){
-system("cls");    
+    system("cls");
 BeginDrawing();
 DrawFPS(3,3);
-ClearBackground(GREY);
-
-// Inside Board
-int x = GetMouseX();
-int y = GetMouseY();
-Draw(board);
-    if(x>board.offsetX && x<board.screen_width - board.offsetX){
-        if(y>board.offsetY && y< board.screen_height - board.offsetY){
-            cout<<"Inside Board\n";
-            int col = ((GetMouseX())/board.squaresize);
-            int row = ((GetMouseY()+ board.offsetY)/board.squaresize);
-            cout<<"\nRow: "<<row<<",Column: "<<col;
-
-            if(board.pieceinfo.selected_piece==0)
-                select_a_piece(board);
-            else
-                move_selected_piece(board);
-            
-        show_selected_piece(board);
-        }
+ClearBackground(BLACK);
+draw(board);
+int x = GetMouseX()-OFFSET_x;
+int y = GetMouseY()-OFFSET_y;
+if(x>0 && x<BOARD_SIZE){
+    if(y>0 && y<BOARD_SIZE){
+        cout<<"\nInside Board\n";
+        cout<<"Row: "<<(y)/SQUARE_SIZE;
+        cout<<" Column: "<<(x)/SQUARE_SIZE;
+        updatepositions(board);
     }
+}
 EndDrawing();
-    }
+}
 Unload_Texture();
+system("cls");
 }

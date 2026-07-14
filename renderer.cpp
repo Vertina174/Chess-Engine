@@ -1,17 +1,12 @@
-#include"renderer.h"
-#include"board.h"
-#include"piece.h"
+/*Screen Coordinates using getmouse
+int x = OFFSET_x + board.pieceinfo.col * SQUARE_SIZE;
+int y = OFFSET_y + board.pieceinfo.row * SQUARE_SIZE;
+*/
 #include"src/include/raylib.h"
-#include<iostream>
-// For Refrerrence
-// int y = board.offsetY + (row*board.squaresize);
-// int x = board.offsetX + (col*board.squaresize);
-Color highlight_color = {128,128,128,130};
-Color legal_move = {0,0,0,125};
-
-
-    Texture2D wpawn, wknight, wbishop, wrook, wqueen, wking;
-    Texture2D bpawn, bknight, bbishop, brook, bqueen, bking;
+#include"board.h"
+#include"renderer.h"
+    Texture2D piecetexture[12];
+    Color YELLOWISH ={255,215,0,100};
     
 void Load_Texture(){
     Image whitepawn = LoadImage("assets/wpawn.png");
@@ -28,34 +23,34 @@ void Load_Texture(){
     Image blackqueen = LoadImage("assets/bqueen.png");
     Image blackking = LoadImage("assets/bking.png");
 
-    ImageResize(&whitepawn,  90,90);
+    ImageResize(&whitepawn,  75,75);
     ImageResize(&whiteknight,75,75);
     ImageResize(&whitebishop,75,75);
     ImageResize(&whiterook,  75,75);
     ImageResize(&whiteking,  75,75);
     ImageResize(&whitequeen, 75,75);
 
-    ImageResize(&blackpawn,  90,90);
+    ImageResize(&blackpawn,  75,75);
     ImageResize(&blackknight,75,75);
     ImageResize(&blackbishop,75,75);
     ImageResize(&blackrook,  75,75);
     ImageResize(&blackking,  75,75);
     ImageResize(&blackqueen, 75,75);
 
+    piecetexture[WPAWN]   = LoadTextureFromImage(whitepawn);
+    piecetexture[WKNIGHT] = LoadTextureFromImage(whiteknight);
+    piecetexture[WBISHOP] = LoadTextureFromImage(whitebishop);
+    piecetexture[WROOK]   = LoadTextureFromImage(whiterook);
+    piecetexture[WQUEEN]  = LoadTextureFromImage(whitequeen);
+    piecetexture[WKING]   = LoadTextureFromImage(whiteking);
     
-    wpawn   = LoadTextureFromImage(whitepawn);
-    wknight = LoadTextureFromImage(whiteknight);
-    wbishop = LoadTextureFromImage(whitebishop);
-    wking   = LoadTextureFromImage(whiteking);
-    wqueen  = LoadTextureFromImage(whitequeen);
-    wrook   = LoadTextureFromImage(whiterook);
 
-    bpawn   = LoadTextureFromImage(blackpawn);
-    bking   = LoadTextureFromImage(blackking);
-    bqueen  = LoadTextureFromImage(blackqueen);
-    bknight = LoadTextureFromImage(blackknight);
-    bbishop = LoadTextureFromImage(blackbishop);
-    brook   = LoadTextureFromImage(blackrook);
+    piecetexture[BPAWN]   = LoadTextureFromImage(blackpawn);
+    piecetexture[BKNIGHT] = LoadTextureFromImage(blackking);
+    piecetexture[BBISHOP] = LoadTextureFromImage(blackqueen);
+    piecetexture[BROOK]   = LoadTextureFromImage(blackknight);
+    piecetexture[BQUEEN]  = LoadTextureFromImage(blackbishop);
+    piecetexture[BKING]   = LoadTextureFromImage(blackrook);
 
     UnloadImage(whitepawn);
     UnloadImage(whitequeen);
@@ -71,119 +66,52 @@ void Load_Texture(){
     UnloadImage(blackqueen);
     UnloadImage(blackknight);
     
-system("cls");
+
 }
+
 void Unload_Texture(){
-        UnloadTexture(wpawn);
-        UnloadTexture(wrook);
-        UnloadTexture(wking);
-        UnloadTexture(wknight);
-        UnloadTexture(wqueen);
-        UnloadTexture(wbishop);
-
-        UnloadTexture(bpawn);
-        UnloadTexture(bqueen);
-        UnloadTexture(bking);
-        UnloadTexture(brook);
-        UnloadTexture(bbishop);
-        UnloadTexture(bknight);
-system("cls");
-    }
-
-void draw_board(Board& board){
-    
-    
-// Drawing Empty Board
-    for(int row=0; row<8; ++row){
-        for(int col=0; col<8; ++col){
-            Color color;
-            if((row+col)%2==0)
-                color = {238,238,210,255};
-            else
-                color = {118,150,86,255};
-
-        int x = board.offsetX + (col*board.squaresize);
-        int y = board.offsetY + (row*board.squaresize);
-        DrawRectangle(x,y,board.squaresize,board.squaresize,color);
-
-        }
-    }
+for(int i=0; i<12; i++){
+    UnloadTexture(piecetexture[i]);
 }
-// Drawing Pieces
-void draw_pieces(Board& board){
-for(int row=0; row<8; ++row){
-    for(int col=0; col<8; ++col){
-
-            int x = board.offsetX + (col*board.squaresize);
-            int y = board.offsetY + (row*board.squaresize);
-
-        switch(board.board[row][col]){
-        case WPAWN:{
-            DrawTexture(wpawn,x-5,y-7,WHITE);
-            break;
-        }
-        case WROOK:{
-            DrawTexture(wrook,x+3,y+5,WHITE);
-            break;
-        }
-        case WKNIGHT:{
-            DrawTexture(wknight,x+3,y+5,WHITE);
-            break;
-        }
-        case WBISHOP:{
-            DrawTexture(wbishop,x+3,y+5,WHITE);
-            break;
-        }
-        case WQUEEN:{
-            DrawTexture(wqueen,x+3,y+5,WHITE);
-            break;
-        }
-        case WKING:{
-            DrawTexture(wking,x+3,y+5,WHITE);
-            break;
-        }
-        case BPAWN:{
-            DrawTexture(bpawn,x-5,y-7,WHITE);
-            break;
-        }
-        case BROOK:{
-            DrawTexture(brook,x+3,y+5,WHITE);
-            break;
-        }
-        case BKNIGHT:{
-            DrawTexture(bknight,x+3,y+5,WHITE);
-            break;
-        }
-        case BBISHOP:{
-            DrawTexture(bbishop,x+3,y+5,WHITE);
-            break;
-        }
-        case BQUEEN:{
-            DrawTexture(bqueen,x+3,y+5,WHITE);
-            break;
-        }
-        case BKING:{
-            DrawTexture(bking,x+3,y+5,WHITE);
-            break;
-                }
-            }
+    }
+    
+void drawboard(Board& board){
+    Color color;
         
-        }
+for(int row=0; row<8; row++){
+    for(int col=0; col<8; col++){
+        if((row+col)%2==0)
+            color={238,238,210,255};
+        else
+            color={118,150,86,255};
+        DrawRectangle(OFFSET_x+(col)*SQUARE_SIZE,OFFSET_y+(row)*SQUARE_SIZE,SQUARE_SIZE,SQUARE_SIZE,color);
     }
 }
-void highlighted_piece(Board& board){
-    if(board.pieceinfo.selected_piece==0)
-        return;
+}
 
-        int y = (board.pieceinfo.row *board.squaresize);
-        int x = (board.pieceinfo.col *board.squaresize);
-        DrawRectangle(x,y-50,board.squaresize,board.squaresize,highlight_color);
-        DrawCircle(x+40,y-90,10,legal_move);
-        DrawCircle(x+40,y-(85*2),10,legal_move);
+void drawpiece(Board& board){
+for(int row=0; row<8; row++){
+    for(int col=0; col<8; col++){
+        Piece currentpiece = board.board[row][col];
+        if(currentpiece==EMPTY) continue;
+
+int left = OFFSET_x + (col*SQUARE_SIZE);
+int top  = OFFSET_y + (row*SQUARE_SIZE);
+
+DrawTexture(piecetexture[currentpiece],left,top,WHITE);
+    }
 }
-void Draw(Board& board){
-    draw_board(board);
-    draw_pieces(board);
-    if(board.pieceinfo.selected_piece!=0)
-            highlighted_piece(board);
 }
+
+void highlight_selected_piece(Board& board){
+
+int x = OFFSET_x + board.pieceinfo.col * SQUARE_SIZE;
+int y = OFFSET_y + board.pieceinfo.row * SQUARE_SIZE;
+DrawRectangle(x,y,SQUARE_SIZE,SQUARE_SIZE,YELLOWISH);
+}
+
+void draw(Board& board){
+drawboard(board);
+highlight_selected_piece(board);
+drawpiece(board);
+    }

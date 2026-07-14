@@ -1,6 +1,11 @@
+
+#define SCREEN_WIDTH  800
+#define SCREEN_HEIGHT 700
+#define SQUARE_SIZE   80
+#define BOARD_SIZE    80*8
+#define OFFSET_x      (SCREEN_WIDTH-BOARD_SIZE)/2
+#define OFFSET_y      (SCREEN_HEIGHT -BOARD_SIZE)/2
 #pragma once
-
-
 enum Piece{
     EMPTY=0,
 
@@ -37,12 +42,7 @@ class Board{
         {WPAWN,WPAWN,WPAWN,WPAWN,WPAWN,WPAWN,WPAWN,WPAWN},
         {WROOK,WKNIGHT,WBISHOP,WQUEEN,WKING,WBISHOP,WKNIGHT,WROOK}
     };
-    const int squaresize    = 80;
-    const int boardsize     = 80*8;
-    const int screen_width  = 800;
-    const int screen_height = 700;
-    const int offsetX       =(screen_width-(boardsize))/2;
-    const int offsetY       =(screen_height -(boardsize))/2;
+    
     
 };
 void select_a_piece(Board& board);

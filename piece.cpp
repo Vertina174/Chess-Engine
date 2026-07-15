@@ -10,7 +10,8 @@ int y = OFFSET_y + board.pieceinfo.row * SQUARE_SIZE;
 #include"piece.h"
 #include"src/include/raylib.h"
 #include<iostream>
-enum PieceColor {color_none, color_white,color_black};
+#include"move.h"
+
 void clearPieceInfo(Board& board){
     board.pieceinfo.row = -1;
     board.pieceinfo.col = -1;
@@ -24,10 +25,12 @@ void select_a_piece(Board& board){
         return;
 int col = (GetMouseX() - OFFSET_x) / SQUARE_SIZE;
 int row = (GetMouseY() - OFFSET_y) / SQUARE_SIZE;
-std::cout<<"Select Piece";
-board.pieceinfo.row=row;
-board.pieceinfo.col=col;
-board.pieceinfo.selected_piece=board.board[row][col];
+if(board.board[row][col]!=EMPTY){
+    board.pieceinfo.row=row;
+    board.pieceinfo.col=col;
+    board.pieceinfo.selected_piece=board.board[row][col];
+    }
+
 }
 void show_selected_piece(Board& board){
 //In Terminal
@@ -37,7 +40,7 @@ std::cout<<board.pieceinfo.col<<"]\n";
 }
 PieceColor getPieceColor(Piece piece){
     if(piece == EMPTY)  return color_none;
-    else if(piece>EMPTY && piece<WKING) return color_white;
+    else if(piece>EMPTY && piece<=WKING) return color_white;
 
 return color_black;
 }
@@ -61,18 +64,52 @@ if(getPieceColor(board.board[row][col])==getPieceColor(board.pieceinfo.selected_
         clearPieceInfo(board);
         return false;
     }
-    return true;
+    bool move=false;
+    switch(board.pieceinfo.selected_piece){
+        case WPAWN:
+        case BPAWN:{
+            move=isPawnLegal(board, row, col);
+            break;
+        }
+        case WKNIGHT:
+        case BKNIGHT:{
+            move=isKnightLegal(board, row, col);
+            break;
+        }
+        case WBISHOP:
+        case BBISHOP:{
+            move=isBishopLegal(board,row,col);
+            break;
+        }
+        case WROOK:
+        case BROOK:{
+            move=isRookLegal(board,row,col);
+            break;
+        }
+        case WQUEEN:
+        case BQUEEN:{
+            move=(isBishopLegal(board,row,col)|| isRookLegal(board,row,col));
+            break;
+        }
+        case WKING:
+        case BKING:{
+                move=isKingLegal(board, row, col);
+                break;
+        }
+    }
+    return move;
 }
 void move_selected_piece(Board& board){
      
-    if(!IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+    if(!IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
         return;
   
     int col = (GetMouseX() - OFFSET_x) / SQUARE_SIZE;
     int row = (GetMouseY() - OFFSET_y) / SQUARE_SIZE;
     
-    if(!legalmove(board, row, col))
-        return;
+    if(!legalmove(board, row, col)){
+        clearPieceInfo(board);
+        return;}
 board.board[row][col]=board.pieceinfo.selected_piece;
 board.board[board.pieceinfo.row][board.pieceinfo.col]=EMPTY;
 

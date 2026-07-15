@@ -1,4 +1,4 @@
-// g++ main.cpp renderer.cpp piece.cpp -o a -I "src/include" -L "src/lib" -lraylib -lopengl32 -lgdi32 -lwinmm -lshell32 && ./a
+// g++ main.cpp renderer.cpp piece.cpp move.cpp -o a -I "src/include" -L "src/lib" -lraylib -lopengl32 -lgdi32 -lwinmm -lshell32 && ./a
 #include"src/include/raylib.h"
 #include<iostream>
 #include"board.h"

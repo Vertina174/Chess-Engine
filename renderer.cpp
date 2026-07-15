@@ -46,11 +46,11 @@ void Load_Texture(){
     
 
     piecetexture[BPAWN]   = LoadTextureFromImage(blackpawn);
-    piecetexture[BKNIGHT] = LoadTextureFromImage(blackking);
-    piecetexture[BBISHOP] = LoadTextureFromImage(blackqueen);
-    piecetexture[BROOK]   = LoadTextureFromImage(blackknight);
-    piecetexture[BQUEEN]  = LoadTextureFromImage(blackbishop);
-    piecetexture[BKING]   = LoadTextureFromImage(blackrook);
+    piecetexture[BKNIGHT] = LoadTextureFromImage(blackknight);
+    piecetexture[BBISHOP] = LoadTextureFromImage(blackbishop);
+    piecetexture[BROOK]   = LoadTextureFromImage(blackrook);
+    piecetexture[BQUEEN]  = LoadTextureFromImage(blackqueen);
+    piecetexture[BKING]   = LoadTextureFromImage(blackking);
 
     UnloadImage(whitepawn);
     UnloadImage(whitequeen);

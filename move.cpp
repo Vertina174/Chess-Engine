@@ -15,18 +15,28 @@ bool isPawnLegal(Board& board, int row, int col){
 
     int drow = row-startrow;
     int dcol = col-startcol;
+
 // Forward one Square
     if(dcol==0 && drow==direction)
         return (board.board[row][col]==EMPTY);
 // Forward two square
+
     if(dcol==0 && drow==2*direction){
         if(startrow==startingrow)
             return (board.board[startrow+direction][startcol]==EMPTY && board.board[row][col]==EMPTY);
         return false;
     }
-    
-    if(drow==direction && absolute(dcol)==1)
+// Caputer emeny Digonally
+    if(drow==direction && absolute(dcol)==1  && board.board[row][col]!=EMPTY)
         return (isEnemy(board.board[startrow][startcol],board.board[row][col]));
+
+int vaild_en_passant_row=(selected_piece==WPAWN)?2:5;
+if (row == vaild_en_passant_row && col == board.pieceinfo.en_passant_col) {
+    // Is the target column the same column as the pawn that just double-stepped?
+    if (drow == direction && absolute(dcol)==1) {
+        return true; // Yes! This diagonal move into an empty square is legal.
+    }
+}
     return false;
 }
 

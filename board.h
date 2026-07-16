@@ -27,10 +27,19 @@ struct PieceInfo{
     int row=-1;
     int col=-1;
     Piece selected_piece=EMPTY;
+    int en_passant_col=-1;
+
+};
+struct CASTLING{
+    bool whiteKingSide = true;
+    bool whiteQueenSide = true;
+    bool blackKingSide = true;
+    bool blackQueenSide = true;
 };
 class Board{
     public:
     PieceInfo pieceinfo;
+    CASTLING castling;
     Piece board[8][8]{
         
         {BROOK,BKNIGHT,BBISHOP,BQUEEN,BKING,BBISHOP,BKNIGHT,BROOK},
@@ -42,6 +51,5 @@ class Board{
         {WPAWN,WPAWN,WPAWN,WPAWN,WPAWN,WPAWN,WPAWN,WPAWN},
         {WROOK,WKNIGHT,WBISHOP,WQUEEN,WKING,WBISHOP,WKNIGHT,WROOK}
     };
-    
     
 };

@@ -111,6 +111,16 @@ if(board.board[row][col]!=EMPTY && getPieceColor(board.board[row][col])==getPiec
         case WKING:
         case BKING:{
                 move=isKingLegal(board, row, col);
+                if(move){
+                if(board.pieceinfo.selected_piece==WKING){
+                    board.castling.whiteKingSide=false;
+                    board.castling.whiteQueenSide=false;
+                }
+                else{
+                    board.castling.blackKingSide=false;
+                    board.castling.blackQueenSide=false;
+                }
+                }
                 break;
         }
     }

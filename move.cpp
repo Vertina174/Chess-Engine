@@ -1,5 +1,6 @@
 #include"move.h"
 #include"piece.h"
+#include<iostream>
 int absolute(int n){
     if(n<0)
         return n*-1;
@@ -43,7 +44,6 @@ if (row == vaild_en_passant_row && col == board.pieceinfo.en_passant_col) {
 bool isKnightLegal(Board& board, int row, int col){
     int startrow=board.pieceinfo.row;
     int startcol=board.pieceinfo.col;
-    Piece selected_piece = board.pieceinfo.selected_piece;
     int drow = row-startrow;
     int dcol = col-startcol;
 // Up and Down
@@ -60,7 +60,6 @@ return false;
 bool isBishopLegal(Board& board, int row, int col){
     int startrow=board.pieceinfo.row;
     int startcol=board.pieceinfo.col;
-    Piece selected_piece = board.pieceinfo.selected_piece;
     int drow = row-startrow;
     int dcol = col-startcol;  
 
@@ -82,13 +81,12 @@ return true;
 bool isRookLegal  (Board& board, int row, int col){
     int startrow=board.pieceinfo.row;
     int startcol=board.pieceinfo.col;
-    
-    Piece selected_piece = board.pieceinfo.selected_piece;
     int drow = row-startrow;
     int dcol = col-startcol; 
-     
+
     if(drow!=0 && dcol!=0)    
         return false;
+
     int steprow=0;
     int stepcol=0;
     if(drow!=0)
@@ -97,13 +95,25 @@ bool isRookLegal  (Board& board, int row, int col){
         stepcol=(dcol>0)?1:-1;
     int r=startrow+steprow;
     int c=startcol+stepcol;
-    while(r!=row && c!=col){
+    while(r!=row || c!=col){
         if(board.board[r][c]!=EMPTY)
             return false;
         r+=steprow;
         c+=stepcol;
     }
-return true; 
+    if(startrow==0){
+        if(startcol==0)
+            board.castling.blackQueenSide=false;
+        else if(startcol==7)
+            board.castling.blackKingSide=false;
+    }
+    else if(startrow==7){
+        if(startcol==0)
+            board.castling.whiteQueenSide=false;
+        else if(startcol==7)
+            board.castling.whiteKingSide=false;
+    }
+return true;
 }
 bool isKingLegal(Board& board, int row, int col){
     int startrow = board.pieceinfo.row;
@@ -112,11 +122,57 @@ bool isKingLegal(Board& board, int row, int col){
     int drow = row - startrow;
     int dcol = col - startcol;
 
-    // Use absolute differences (reusing your absolute function or std::abs)
-    // The King can move at most 1 square in any direction
-    if (absolute(drow) <= 1 && absolute(dcol) <= 1) {
+    if (absolute(drow) <= 1 && absolute(dcol) <= 1)
         return true;
+// Castling for white king
+if(drow==0 && absolute(dcol)==2){
+    if(board.pieceinfo.selected_piece==WKING){
+//Kingside Castling (short castle)
+        if(col==6 && board.castling.whiteKingSide){
+            if(board.board[7][5]==EMPTY && board.board[7][6]==EMPTY){
+                board.castling.whiteKingSide=false;
+                board.castling.whiteQueenSide=false;
+                board.board[row][5]=board.board[row][7];
+                board.board[row][7]=EMPTY;
+                return true;
+            }
+        }
+//QueenSide Castling (long castle)
+        if(col==2 && board.castling.whiteQueenSide){
+            if(board.board[7][2]==EMPTY && board.board[7][3]==EMPTY){
+            board.castling.whiteKingSide=false;
+            board.castling.whiteQueenSide=false;
+            board.board[row][3]=board.board[row][0];
+            board.board[row][0]=EMPTY;
+                return true;
+            }
+        }
+    
+}
+// Castling For black king
+else{
+// KingSide Castling (Short Castle)
+    if(col==6 && board.castling.blackKingSide){
+        if(board.board[0][5]==EMPTY && board.board[0][6]==EMPTY){
+            board.castling.blackKingSide=false;
+            board.castling.blackQueenSide=false;
+            board.board[row][5]=board.board[row][7];
+            board.board[row][7]=EMPTY;
+            return true;
+        }
     }
 
+// Queenside Castling (Long Castle)
+    if(col==2 && board.castling.blackQueenSide){
+        if(board.board[0][2]==EMPTY && board.board[0][3]==EMPTY){
+            board.castling.blackKingSide=false;
+            board.castling.blackQueenSide=false;
+            board.board[row][3]=board.board[row][0];
+            board.board[row][0]=EMPTY;
+            return true;
+            }
+        }
+    }
+}
     return false;
 }

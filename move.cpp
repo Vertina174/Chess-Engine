@@ -6,6 +6,7 @@ int absolute(int n){
         return n*-1;
     return n;
 }
+
 bool isPawnLegal(Board& board, int row, int col){
     int startrow=board.pieceinfo.row;
     int startcol=board.pieceinfo.col;
@@ -18,26 +19,61 @@ bool isPawnLegal(Board& board, int row, int col){
     int dcol = col-startcol;
 
 // Forward one Square
-    if(dcol==0 && drow==direction)
+    if(dcol==0 && drow==direction){
+        if(selected_piece==WPAWN && row==0 && board.board[row][col]==EMPTY){
+            board.pawnpromotion.PromotionState=true;
+            board.pawnpromotion.PromotionColor=color_white;
+            board.pawnpromotion.row=row;
+            board.pawnpromotion.col=col;
+            board.board[startrow][startcol]=EMPTY;
+            return false;
+        }
+        else if(selected_piece==BPAWN && row==7 && board.board[row][col]==EMPTY){
+            board.pawnpromotion.PromotionState=true;
+            board.pawnpromotion.PromotionColor=color_black;
+            board.pawnpromotion.row=row;
+            board.pawnpromotion.col=col;
+            board.board[startrow][startcol]=EMPTY;
+            return false;
+        }
         return (board.board[row][col]==EMPTY);
+}
 // Forward two square
-
     if(dcol==0 && drow==2*direction){
         if(startrow==startingrow)
             return (board.board[startrow+direction][startcol]==EMPTY && board.board[row][col]==EMPTY);
         return false;
     }
-// Caputer emeny Digonally
-    if(drow==direction && absolute(dcol)==1  && board.board[row][col]!=EMPTY)
-        return (isEnemy(board.board[startrow][startcol],board.board[row][col]));
 
-int vaild_en_passant_row=(selected_piece==WPAWN)?2:5;
-if (row == vaild_en_passant_row && col == board.pieceinfo.en_passant_col) {
+// Caputer emeny Digonally
+    if(drow==direction && absolute(dcol)==1  && board.board[row][col]!=EMPTY){
+        if(selected_piece==WPAWN && row==0 && board.board[row][col]==EMPTY){
+            board.pawnpromotion.PromotionState=true;
+            board.pawnpromotion.PromotionColor=color_white;
+            board.pawnpromotion.row=row;
+            board.pawnpromotion.col=col;
+            board.board[startrow][startcol]=EMPTY;
+            return false;
+        }
+        else if(selected_piece==BPAWN && row==7 && board.board[row][col]==EMPTY){
+            board.pawnpromotion.PromotionState=true;
+            board.pawnpromotion.PromotionColor=color_black;
+            board.pawnpromotion.row=row;
+            board.pawnpromotion.col=col;
+            board.board[startrow][startcol]=EMPTY;
+            return false;
+        }
+        return (isEnemy(board.board[startrow][startcol],board.board[row][col]));}
+
+// En Passant 
+if (row == board.enpassant.row && col == board.enpassant.col) {
     // Is the target column the same column as the pawn that just double-stepped?
     if (drow == direction && absolute(dcol)==1) {
+        clearEnPassant(board);
         return true; // Yes! This diagonal move into an empty square is legal.
     }
 }
+    clearEnPassant(board);
     return false;
 }
 
@@ -124,12 +160,12 @@ bool isKingLegal(Board& board, int row, int col){
 
     if (absolute(drow) <= 1 && absolute(dcol) <= 1)
         return true;
-// Castling for white king
+// Castling for White King
 if(drow==0 && absolute(dcol)==2){
     if(board.pieceinfo.selected_piece==WKING){
 //Kingside Castling (short castle)
         if(col==6 && board.castling.whiteKingSide){
-            if(board.board[7][5]==EMPTY && board.board[7][6]==EMPTY){
+            if(board.board[7][5]==EMPTY && board.board[7][6]==EMPTY && board.board[7][7]==WROOK){
                 board.castling.whiteKingSide=false;
                 board.castling.whiteQueenSide=false;
                 board.board[row][5]=board.board[row][7];
@@ -139,7 +175,7 @@ if(drow==0 && absolute(dcol)==2){
         }
 //QueenSide Castling (long castle)
         if(col==2 && board.castling.whiteQueenSide){
-            if(board.board[7][2]==EMPTY && board.board[7][3]==EMPTY){
+            if(board.board[7][2]==EMPTY && board.board[7][3]==EMPTY && board.board[7][0]==WROOK){
             board.castling.whiteKingSide=false;
             board.castling.whiteQueenSide=false;
             board.board[row][3]=board.board[row][0];
@@ -153,7 +189,7 @@ if(drow==0 && absolute(dcol)==2){
 else{
 // KingSide Castling (Short Castle)
     if(col==6 && board.castling.blackKingSide){
-        if(board.board[0][5]==EMPTY && board.board[0][6]==EMPTY){
+        if(board.board[0][5]==EMPTY && board.board[0][6]==EMPTY && board.board[0][7]==BROOK){
             board.castling.blackKingSide=false;
             board.castling.blackQueenSide=false;
             board.board[row][5]=board.board[row][7];
@@ -164,7 +200,7 @@ else{
 
 // Queenside Castling (Long Castle)
     if(col==2 && board.castling.blackQueenSide){
-        if(board.board[0][2]==EMPTY && board.board[0][3]==EMPTY){
+        if(board.board[0][2]==EMPTY && board.board[0][3]==EMPTY && board.board[0][0]==BROOK){
             board.castling.blackKingSide=false;
             board.castling.blackQueenSide=false;
             board.board[row][3]=board.board[row][0];

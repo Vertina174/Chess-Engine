@@ -37,20 +37,20 @@ void Load_Texture(){
     ImageResize(&blackking,  75,75);
     ImageResize(&blackqueen, 75,75);
 
-    piecetexture[WPAWN]   = LoadTextureFromImage(whitepawn);
-    piecetexture[WKNIGHT] = LoadTextureFromImage(whiteknight);
-    piecetexture[WBISHOP] = LoadTextureFromImage(whitebishop);
-    piecetexture[WROOK]   = LoadTextureFromImage(whiterook);
-    piecetexture[WQUEEN]  = LoadTextureFromImage(whitequeen);
-    piecetexture[WKING]   = LoadTextureFromImage(whiteking);
+    piecetexture[WPAWN  ]  = LoadTextureFromImage(whitepawn);
+    piecetexture[WKNIGHT]  = LoadTextureFromImage(whiteknight);
+    piecetexture[WBISHOP]  = LoadTextureFromImage(whitebishop);
+    piecetexture[WROOK  ]  = LoadTextureFromImage(whiterook);
+    piecetexture[WQUEEN ]  = LoadTextureFromImage(whitequeen);
+    piecetexture[WKING  ]  = LoadTextureFromImage(whiteking);
     
 
-    piecetexture[BPAWN]   = LoadTextureFromImage(blackpawn);
+    piecetexture[BPAWN  ] = LoadTextureFromImage(blackpawn);
     piecetexture[BKNIGHT] = LoadTextureFromImage(blackknight);
     piecetexture[BBISHOP] = LoadTextureFromImage(blackbishop);
-    piecetexture[BROOK]   = LoadTextureFromImage(blackrook);
-    piecetexture[BQUEEN]  = LoadTextureFromImage(blackqueen);
-    piecetexture[BKING]   = LoadTextureFromImage(blackking);
+    piecetexture[BROOK  ] = LoadTextureFromImage(blackrook);
+    piecetexture[BQUEEN ] = LoadTextureFromImage(blackqueen);
+    piecetexture[BKING  ] = LoadTextureFromImage(blackking);
 
     UnloadImage(whitepawn);
     UnloadImage(whitequeen);
@@ -110,8 +110,27 @@ int y = OFFSET_y + board.pieceinfo.row * SQUARE_SIZE;
 DrawRectangle(x,y,SQUARE_SIZE,SQUARE_SIZE,YELLOWISH);
 }
 
+void draw_promotion_window(Board& board){
+
+    int x=OFFSET_x + 1*SQUARE_SIZE;
+    int y=OFFSET_y + 3.5*SQUARE_SIZE;    
+    DrawRectangle(x,y,6*SQUARE_SIZE, 2*SQUARE_SIZE,GRAY);
+    DrawRectangleLines(x,y,6*SQUARE_SIZE,2*SQUARE_SIZE,GOLD);
+
+    int startpiece = (board.pawnpromotion.PromotionColor==color_white)?WKNIGHT:BKNIGHT;
+
+int itemy=y+SQUARE_SIZE/2;
+for(int i=0; i<4; i++){
+    int itemx=x+((i+1)*SQUARE_SIZE);
+    DrawRectangle(itemx+3,itemy,75,75,YELLOWISH);
+    DrawTexture(piecetexture[startpiece+i],itemx,itemy,WHITE);
+    }
+}
+
 void draw(Board& board){
 drawboard(board);
 highlight_selected_piece(board);
 drawpiece(board);
+if(board.pawnpromotion.PromotionState)
+    draw_promotion_window(board);
     }

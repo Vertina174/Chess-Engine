@@ -48,6 +48,83 @@ board.pawnpromotion.PromotionColor=color_none;
 board.pawnpromotion.PromotionState=false;
 }
 
+void handle_promotion(Board& board){
+    if(!IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
+        return;
+int col = (GetMouseX() - OFFSET_x) / SQUARE_SIZE;
+int row = (GetMouseY() - OFFSET_y) / SQUARE_SIZE;
+
+if(row==4){
+    switch(col){
+        case 2:{
+            if(board.pawnpromotion.PromotionColor==color_white){
+                board.board[board.pawnpromotion.row][board.pawnpromotion.col]=WKNIGHT;
+                clearPromotioninfo(board);
+            }
+            else{
+                board.board[board.pawnpromotion.row][board.pawnpromotion.col]=BKNIGHT;
+                clearPromotioninfo(board);
+            }
+            break;
+        }
+        case 3:{
+                        if(board.pawnpromotion.PromotionColor==color_white){
+                board.board[board.pawnpromotion.row][board.pawnpromotion.col]=WBISHOP;
+                clearPromotioninfo(board);
+            }
+            else{
+                board.board[board.pawnpromotion.row][board.pawnpromotion.col]=BBISHOP;
+                clearPromotioninfo(board);
+            }
+            break;
+        }
+        case 4:{
+                        if(board.pawnpromotion.PromotionColor==color_white){
+                board.board[board.pawnpromotion.row][board.pawnpromotion.col]=WROOK;
+                clearPromotioninfo(board);
+            }
+            else{
+                board.board[board.pawnpromotion.row][board.pawnpromotion.col]=BROOK;
+                clearPromotioninfo(board);
+            }
+            break;
+        }
+        case 5:{
+                        if(board.pawnpromotion.PromotionColor==color_white){
+                board.board[board.pawnpromotion.row][board.pawnpromotion.col]=WQUEEN;
+                clearPromotioninfo(board);
+            }
+            else{
+                board.board[board.pawnpromotion.row][board.pawnpromotion.col]=BQUEEN;
+                clearPromotioninfo(board);
+            }
+            break;
+        }
+    }
+}
+    
+}
+
+void FindKing(Board& board, PieceColor color){
+    Piece targetking = (color==color_white)?WKING:BKING;
+    for(int i=0; i<8; i++){
+        for(int j=0; j<8; j++){
+            if(board.board[i][j]==targetking){
+                board.square_attacked.row = i;
+                board.square_attacked.col = j;
+                board.square_attacked.opposite_color = (color==color_white)?color_black:color_white;
+                return;
+            }
+        }
+    }
+}
+
+bool KingInCheck(Board& board, PieceColor color){
+
+    FindKing(board, color);
+    return isSquareAttack(board);
+}
+
 void show_selected_piece(Board& board){
 //In Terminal
 cout<<"\nSelected Piece: "<<board.pieceinfo.selected_piece;
@@ -55,6 +132,8 @@ cout<<" ["<<board.pieceinfo.row<<",";
 cout<<board.pieceinfo.col<<"]\n";
 cout<<"\nEn passant col: "<<board.enpassant.col;
 cout<<"\nEn passant Row: "<<board.enpassant.row;
+cout<<"\n King in Check: Black "<<KingInCheck(board, color_black);
+cout<<"\n King in Check: White "<<KingInCheck(board, color_white);
 }
 
 void select_a_piece(Board& board){
@@ -146,64 +225,6 @@ if(board.board[row][col]!=EMPTY && getPieceColor(board.board[row][col])==getPiec
     }
     return move;
 }
-
-void handle_promotion(Board& board){
-    if(!IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
-        return;
-int col = (GetMouseX() - OFFSET_x) / SQUARE_SIZE;
-int row = (GetMouseY() - OFFSET_y) / SQUARE_SIZE;
-
-if(row==4){
-    switch(col){
-        case 2:{
-            if(board.pawnpromotion.PromotionColor==color_white){
-                board.board[board.pawnpromotion.row][board.pawnpromotion.col]=WKNIGHT;
-                clearPromotioninfo(board);
-            }
-            else{
-                board.board[board.pawnpromotion.row][board.pawnpromotion.col]=BKNIGHT;
-                clearPromotioninfo(board);
-            }
-            break;
-        }
-        case 3:{
-                        if(board.pawnpromotion.PromotionColor==color_white){
-                board.board[board.pawnpromotion.row][board.pawnpromotion.col]=WBISHOP;
-                clearPromotioninfo(board);
-            }
-            else{
-                board.board[board.pawnpromotion.row][board.pawnpromotion.col]=BBISHOP;
-                clearPromotioninfo(board);
-            }
-            break;
-        }
-        case 4:{
-                        if(board.pawnpromotion.PromotionColor==color_white){
-                board.board[board.pawnpromotion.row][board.pawnpromotion.col]=WROOK;
-                clearPromotioninfo(board);
-            }
-            else{
-                board.board[board.pawnpromotion.row][board.pawnpromotion.col]=BROOK;
-                clearPromotioninfo(board);
-            }
-            break;
-        }
-        case 5:{
-                        if(board.pawnpromotion.PromotionColor==color_white){
-                board.board[board.pawnpromotion.row][board.pawnpromotion.col]=WQUEEN;
-                clearPromotioninfo(board);
-            }
-            else{
-                board.board[board.pawnpromotion.row][board.pawnpromotion.col]=BQUEEN;
-                clearPromotioninfo(board);
-            }
-            break;
-        }
-    }
-}
-    
-}
-
 
 void move_selected_piece(Board& board){
      

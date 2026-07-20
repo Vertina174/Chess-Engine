@@ -118,9 +118,9 @@ bool isRookLegal  (Board& board, int row, int col){
     int startrow=board.pieceinfo.row;
     int startcol=board.pieceinfo.col;
     int drow = row-startrow;
-    int dcol = col-startcol; 
+    int dcol = col-startcol;
 
-    if(drow!=0 && dcol!=0)    
+    if(drow!=0 && dcol!=0)
         return false;
 
     int steprow=0;
@@ -151,6 +151,7 @@ bool isRookLegal  (Board& board, int row, int col){
     }
 return true;
 }
+
 bool isKingLegal(Board& board, int row, int col){
     int startrow = board.pieceinfo.row;
     int startcol = board.pieceinfo.col;
@@ -211,4 +212,101 @@ else{
     }
 }
     return false;
+}
+
+bool isSquareAttack(Board& board){
+    int startrow=board.square_attacked.row;
+    int startcol=board.square_attacked.col;
+    PieceColor color= board.square_attacked.opposite_color;
+
+// Knight THREAT
+int knightmoves[8][2]={
+{-2,-1}, {-2,1}, {-1,-2}, {-1, 2},
+{1,-2},  {1,2} , {2,-1} , {2 , 1}
+};
+    for(int i=0; i<8; i++){
+        int r = startrow + knightmoves[i][0];
+        int c = startcol + knightmoves[i][1];
+        if(r>=0 && r<8 && c>=0 && c<8){
+            Piece p = board.board[r][c];
+            if(getPieceColor(p)==color && (p== WKNIGHT || p==BKNIGHT))
+                return true;
+        }
+    }
+
+// ROOK THREATS
+int rookmoves[4][2] ={    {-1,0}, {1,0}, {0,-1}, {0,1}    };
+for(int i=0; i<4; i++){
+    int r = startrow;
+    int c = startcol;
+    while(true){
+r+=rookmoves[i][0];
+c+=rookmoves[i][1];
+if(r<0 || r>=8 || c<0 || c>=8)
+        break;
+Piece p = board.board[r][c];
+if(p!=EMPTY){
+    if(getPieceColor(p)==color && (p==WROOK || p==BROOK || p==WQUEEN || p==BQUEEN))
+        return true;
+    break;
+        }
+    }
+}
+
+// Bishop THREATS
+int bishopmoves[4][2] = {   {-1,-1}, {-1,1}, {1,-1}, {1,1}  };
+
+for(int i=0; i<4; i++){
+    int r = startrow;
+    int c = startcol;
+
+    while(true){
+        r+=bishopmoves[i][0];
+        c+=bishopmoves[i][1];
+    if(r<0 || r>=8 || c<0 || c>=8)
+        break;
+        Piece p = board.board[r][c];
+    if(p!=EMPTY){
+        if(getPieceColor(p)==color && (p==WBISHOP || p==BBISHOP || p==WQUEEN || p==BQUEEN))
+            return true;
+        break;
+    }
+    }
+}
+
+//Pawn THREATS
+int direction =(color==color_white)?-1:1;
+int r = startrow + direction;
+
+// Left Attacker
+if(r>=0 && r<8 && startcol-1>=0){
+    Piece p = board.board[r][startcol-1];
+    if(p==(color==color_white)?WPAWN:BPAWN)
+        return true;
+}
+
+// Right Attacker
+if(r>=0 && r<8 && startcol+1<8){
+    Piece p =board.board[r][startcol+1];
+    if(p==(color==color_white)?WPAWN:BPAWN)
+        return true;
+}
+
+// King Threats
+for(int drow=-1; drow<=1; drow++){
+    for(int dcol=-1; dcol<=1; dcol++){
+        if(drow==0 && dcol==0)
+            continue;
+        int r = startrow+drow;
+        int c = startcol+dcol;
+        if(r>=0 && r<8 && c>=0 && c<8){
+            Piece p=board.board[r][c];
+            if(getPieceColor(p)==color && (p==WKING || p==BKING))
+                return true;
+        }
+
+    }
+}
+
+return false;
 }

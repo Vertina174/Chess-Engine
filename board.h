@@ -25,29 +25,39 @@ enum Piece{
 };
 
 enum PieceColor {color_none, color_white,color_black};
+
 struct PieceInfo{
     int row=-1;
     int col=-1;
     Piece selected_piece=EMPTY;
 };
+
 struct PawnPromotion{
     bool PromotionState=false;
     int  row=-1;
     int  col=-1;
     PieceColor PromotionColor=color_none;
 };
+
 struct Castling{
-    bool whiteKingSide = true;
+    bool whiteKingSide  = true;
     bool whiteQueenSide = true;
-    bool blackKingSide = true;
+    bool blackKingSide  = true;
     bool blackQueenSide = true;
 };
 
 struct EnPassant{
     bool double_step_pawn=false;
-    bool was_en_passant = false;
+    bool was_en_passant  = false;
     int row = -1;
     int col = -1;
+};
+
+struct SquareInAttack{
+int row=-1;
+int col=-1;
+PieceColor opposite_color=color_none;
+bool attacked=false;
 };
 
 class Board{
@@ -56,16 +66,19 @@ class Board{
     Castling  castling;
     EnPassant enpassant;
     PawnPromotion pawnpromotion;
+    SquareInAttack square_attacked;
     Piece board[8][8]{
         
-        {BROOK,EMPTY,EMPTY,EMPTY,BKING,EMPTY,EMPTY,BROOK},
-        {BPAWN,BPAWN,BPAWN,BPAWN,BPAWN,BPAWN,BPAWN,BPAWN},
-        {EMPTY,WPAWN,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY},
+        {BROOK,BKNIGHT,BBISHOP,BQUEEN,BKING,BBISHOP,BKNIGHT,BROOK},
+        // {BPAWN,BPAWN,BPAWN,BPAWN,BPAWN,BPAWN,BPAWN,BPAWN},
         {EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY},
         {EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY},
         {EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY},
-        {WPAWN,WPAWN,WPAWN,WPAWN,WPAWN,WPAWN,WPAWN,WPAWN},
-        {WROOK,EMPTY,EMPTY,EMPTY,WKING,EMPTY,EMPTY,WROOK}
+        {EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY},
+        {EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY},
+        {EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY,EMPTY},
+        // {WPAWN,WPAWN,WPAWN,WPAWN,WPAWN,WPAWN,WPAWN,WPAWN},
+        {WROOK,WKNIGHT,WBISHOP,WQUEEN,WKING,WBISHOP,WKNIGHT,WROOK}
     };
     
 };

@@ -5,6 +5,7 @@ int y = OFFSET_y + board.pieceinfo.row * SQUARE_SIZE;
 #include"src/include/raylib.h"
 #include"board.h"
 #include"renderer.h"
+#include"piece.h"
     Texture2D piecetexture[12];
     Color YELLOWISH ={255,215,0,100};
     
@@ -103,11 +104,158 @@ DrawTexture(piecetexture[currentpiece],left,top,WHITE);
 }
 }
 
-void highlight_selected_piece(Board& board){
+void highlight_rook(Board& board){
+    int startrow=board.pieceinfo.row;
+    int startcol=board.pieceinfo.col;
+  int Direction[4][2] = {   {-1,0}, {1,0}, {0,-1}, {0,1}   };
+        for(int i=0; i<4; i++){
+           int r=startrow;
+           int c=startcol;
+        while(true){
+            r += Direction[i][0];
+            c += Direction[i][1];
+        if(r>=0 && r<8 && c>=0 && c<8){
+        Piece p = board.board[r][c];
+        if(p==EMPTY)
+            DrawCircle(
+                OFFSET_x+c*SQUARE_SIZE+SQUARE_SIZE/2,
+                OFFSET_y+r*SQUARE_SIZE+SQUARE_SIZE/2,
+                15,GRAY);
+        
+        else if(getPieceColor(p)!=getPieceColor(board.pieceinfo.selected_piece))
+                DrawRectangleLines(
+                    OFFSET_x+c*SQUARE_SIZE,
+                    OFFSET_y+r*SQUARE_SIZE,
+                    SQUARE_SIZE,
+                    SQUARE_SIZE,
+                    RED);
+        }
+        else
+            break;
+    }
+}
+}
 
+void highlight_bishop(Board& board){
+    int startrow=board.pieceinfo.row;
+    int startcol=board.pieceinfo.col;
+    int Direction[4][2]={   {-1,-1}, {-1,1}, {1,-1}, {1,1}  };
+    for(int i=0; i<4; i++){
+        int r=startrow;
+        int c=startcol;
+        while(true){
+            r+=Direction[i][0];
+            c+=Direction[i][1];
+        if(r>=0 && r<8 && c>=0 && c<8){
+        Piece p = board.board[r][c];
+        if(p==EMPTY)
+            DrawCircle(
+                OFFSET_x+c*SQUARE_SIZE+SQUARE_SIZE/2,
+                OFFSET_y+r*SQUARE_SIZE+SQUARE_SIZE/2,
+                15,GRAY);
+        
+        else if(getPieceColor(p)!=getPieceColor(board.pieceinfo.selected_piece))
+                DrawRectangleLines(
+                    OFFSET_x+c*SQUARE_SIZE,
+                    OFFSET_y+r*SQUARE_SIZE,
+                    SQUARE_SIZE,
+                    SQUARE_SIZE,
+                    RED);
+        }
+        else
+            break;
+    }
+    }
+    
+}
+
+void highlight_selected_piece(Board& board){
+int startrow = board.pieceinfo.row;
+int startcol = board.pieceinfo.col;
 int x = OFFSET_x + board.pieceinfo.col * SQUARE_SIZE;
 int y = OFFSET_y + board.pieceinfo.row * SQUARE_SIZE;
 DrawRectangle(x,y,SQUARE_SIZE,SQUARE_SIZE,YELLOWISH);
+switch(board.pieceinfo.selected_piece){
+    case WPAWN:
+    case BPAWN:{
+        int direction = (board.pieceinfo.selected_piece==WPAWN)?-1:1;
+        
+        break;
+    }
+    case BKNIGHT:
+    case WKNIGHT:{
+        int knightmoves[8][2]={
+{-2,-1}, {-2,1}, {-1,-2}, {-1, 2},
+{1,-2},  {1,2} , {2,-1} , {2 , 1}
+};
+for(int i=0; i<8; i++){
+    int r = startrow + knightmoves[i][0];
+    int c = startcol + knightmoves[i][1];
+    if(r>=0 && r<8 && c>=0 && c<8){
+        Piece p = board.board[r][c];
+        if(p==EMPTY)
+            DrawCircle(
+                OFFSET_x+c*SQUARE_SIZE+SQUARE_SIZE/2,
+                OFFSET_y+r*SQUARE_SIZE+SQUARE_SIZE/2,
+                15,GRAY);
+        
+        else if(getPieceColor(p)!=getPieceColor(board.pieceinfo.selected_piece))
+                DrawRectangleLines(
+                    OFFSET_x+c*SQUARE_SIZE,
+                    OFFSET_y+r*SQUARE_SIZE,
+                    SQUARE_SIZE,
+                    SQUARE_SIZE,
+                    RED);
+    }
+}
+        break;
+
+    }
+    case BBISHOP:
+    case WBISHOP:{
+        highlight_bishop(board);
+        break;
+    }
+    case BROOK:
+    case WROOK:{
+      highlight_rook(board);
+        break;
+    }
+    case BQUEEN:
+    case WQUEEN:{
+        highlight_bishop(board);
+        highlight_rook(board);
+        break;
+    }
+    case WKING:
+    case BKING:{
+        for(int drow=-1; drow<=1; drow++){
+        for(int dcol=-1; dcol<=1; dcol++){
+            if(drow==0 && dcol==0)
+                continue;
+                int r = startrow+drow;
+                int c = startcol+dcol;
+            if(r>=0 && r<8 && c>=0 && c<8){
+        Piece p = board.board[r][c];
+        if(p==EMPTY)
+            DrawCircle(
+                OFFSET_x+c*SQUARE_SIZE+SQUARE_SIZE/2,
+                OFFSET_y+r*SQUARE_SIZE+SQUARE_SIZE/2,
+                15,GRAY);
+        
+        else if(getPieceColor(p)!=getPieceColor(board.pieceinfo.selected_piece))
+                DrawRectangleLines(
+                    OFFSET_x+c*SQUARE_SIZE,
+                    OFFSET_y+r*SQUARE_SIZE,
+                    SQUARE_SIZE,
+                    SQUARE_SIZE,
+                    RED);
+            }
+        }
+}
+        break;
+    }
+}
 }
 
 void draw_promotion_window(Board& board){

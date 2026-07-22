@@ -17,6 +17,7 @@ void clearPieceInfo(Board& board){
     board.pieceinfo.row = -1;
     board.pieceinfo.col = -1;
     board.pieceinfo.selected_piece = EMPTY;
+    board.pieceinfo.color=color_none;
 }
 
 PieceColor getPieceColor(Piece piece){
@@ -147,6 +148,7 @@ if(board.board[row][col]!=EMPTY){
     board.pieceinfo.row=row;
     board.pieceinfo.col=col;
     board.pieceinfo.selected_piece=board.board[row][col];
+    board.pieceinfo.color=getPieceColor(board.board[row][col]);
     }
 
 }

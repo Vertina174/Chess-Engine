@@ -29,6 +29,7 @@ enum PieceColor {color_none, color_white,color_black};
 struct PieceInfo{
     int row=-1;
     int col=-1;
+    PieceColor color=color_none;
     Piece selected_piece=EMPTY;
 };
 
